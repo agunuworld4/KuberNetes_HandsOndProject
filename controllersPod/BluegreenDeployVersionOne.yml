@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: javawebapprs
+  namespace: makutaworld
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+     app: javawebappone
+  template:
+    metadata:
+      name: javawebapppod
+      labels:
+        app: javawebappone
+    spec:
+      containers:
+      - name: javawebappcontainer
+        image: agunuworld/java-web-app:8
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javawebapppodsvc
+  namespace: makutaworld
+spec:
+  type: NodePort
+  selector:
+    app: javawebappone
+  ports:
+  - port: 80
+    targetPort: 8080
+    nodePort: 30004
+

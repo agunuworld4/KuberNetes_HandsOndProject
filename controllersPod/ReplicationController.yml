@@ -1,0 +1,37 @@
+#RC Manifest file
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: replicationcontrollerpod
+  namespace: jacocoworldrc
+spec:
+ replicas: 4
+ selector:
+   app: selectorrc
+ template:
+   metadata:
+     name: javawebapppod
+     labels:
+       app: selectorrc
+   spec:
+     containers:
+     - name: javawebapppcontainer
+       image: agunuworld/java-web-app:9
+       ports:
+       - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javawebapppodsvc
+  namespace: jacocoworldrc
+spec:
+  type: NodePort
+  selector:
+    app: selectorrc
+  ports:
+  - port: 80
+    targetPort: 8080
+    nodePort: 30002
+

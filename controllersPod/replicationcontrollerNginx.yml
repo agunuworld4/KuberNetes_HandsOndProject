@@ -1,0 +1,39 @@
+#Nginx node pod
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-podrc
+  namespace: nginxworld
+spec:
+  replicas: 2
+  selector:
+      app: nginxapp
+  template:
+    metadata:
+      name: nginxapppod
+      labels:
+        app: nginxapp
+    spec:
+      containers:
+      - name: nginxcontainer
+        image: nginx
+        ports:
+        - containerPort: 80
+
+---
+# Node Port Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxsvc
+  namespace: nginxworld
+spec:
+  selector:
+    app: nginxapp
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    nodePort: 30036
+    protocol: TCP
