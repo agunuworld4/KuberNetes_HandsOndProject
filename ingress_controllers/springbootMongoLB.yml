@@ -4,7 +4,7 @@ metadata:
   labels:
     name: springboot
   name: spring-controller
-  namespace: makutaworld
+  namespace: agunuworld4
 spec:
   replicas: 2
   template:
@@ -26,9 +26,9 @@ metadata:
   labels:
     name: springboot
   name: springboot
-  namespace: makutaworld
+  namespace: agunuworld4
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 8080
@@ -43,7 +43,7 @@ metadata:
   labels:
     name: mongo
   name: mongo-controller
-  namespace: makutaworld
+  namespace: agunuworld4
 spec:
   replicas: 1
   template:
@@ -52,9 +52,9 @@ spec:
         name: mongo
     spec:
       volumes:
-      - name: ebs-backup
+      - name: pvc-nfs-pv1
         persistentVolumeClaim:
-          claimName: ebs-mongobackup      
+          claimName: pvc-nfs-pv1      
       containers:
       - image: mongo
         name: mongo
@@ -63,25 +63,22 @@ spec:
           containerPort: 27017
           hostPort: 27017
         volumeMounts:
-        - name: ebs-backup
+        - name: pvc-nfs-pv1
           mountPath: /data/db
-...
 
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ebs-mongobackup
-  namespace: makutaworld
+  name: pvc-nfs-pv1
+  namespace: agunuworld4
 spec:
-  storageClassName: default
+  storageClassName: manual
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
-
-
-
+      storage: 500Mi
 
 ---
 # Mongo Node Port RC
@@ -91,7 +88,7 @@ metadata:
   labels:
     name: mongo
   name: mongo
-  namespace: makutaworld
+  namespace: agunuworld4
 spec:
   type: ClusterIP
   ports:

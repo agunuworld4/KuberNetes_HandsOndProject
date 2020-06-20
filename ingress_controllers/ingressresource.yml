@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-resource-1
+spec:
+  rules:
+  - host: springboot.agunuworld.org
+    http:
+      paths:
+      - backend:
+          serviceName: springboot
+          servicePort: 80
+  - host: javawebapppodsvc.agunuworld.org
+    http:
+      paths:
+      - backend:
+          serviceName: javawebapppodsvc
+          servicePort: 80	
