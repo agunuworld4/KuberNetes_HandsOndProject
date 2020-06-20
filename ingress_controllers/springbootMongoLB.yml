@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: springboot
+  name: spring-controller
+  namespace: makutaworld
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: springboot
+    spec:
+      containers:
+      - image: dockerhandson/spring-boot-mongo:latest
+        name: springboot
+        ports:
+        - name: springboot
+          containerPort: 8080       
+---
+# Load Balancer Service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: springboot
+  name: springboot
+  namespace: makutaworld
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    name: springboot
+
+---
+# Mongo host path rc
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: mongo
+  name: mongo-controller
+  namespace: makutaworld
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: mongo
+    spec:
+      volumes:
+      - name: ebs-backup
+        persistentVolumeClaim:
+          claimName: ebs-mongobackup      
+      containers:
+      - image: mongo
+        name: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+          hostPort: 27017
+        volumeMounts:
+        - name: ebs-backup
+          mountPath: /data/db
+...
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ebs-mongobackup
+  namespace: makutaworld
+spec:
+  storageClassName: default
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+
+
+
+---
+# Mongo Node Port RC
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mongo
+  name: mongo
+  namespace: makutaworld
+spec:
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: mongo
+...

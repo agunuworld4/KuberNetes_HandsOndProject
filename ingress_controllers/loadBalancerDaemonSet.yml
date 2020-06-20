@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: javawebapprs
+  namespace: agunuworld
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+     app: javawebapp
+  template:
+    metadata:
+      name: javawebapppod
+      labels:
+        app: javawebapp
+    spec:
+      containers:
+      - name: javawebappcontainer
+        image: agunuworld/java-web-app:8
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javawebapppodsvc
+  namespace: agunuworld
+spec:
+  type: LoadBalancer
+  selector:
+    app: javawebapp
+  ports:
+  - port: 80
+    targetPort: 8080
+
