@@ -10,9 +10,9 @@ spec:
       - backend:
           serviceName: springboot
           servicePort: 80
-  - host: javawebapppodsvc.agunuworld.org
+  - host: mavenwebapppodsvc.agunuworld.org
     http:
       paths:
       - backend:
-          serviceName: javawebapppodsvc
+          serviceName: mavenwebapppodsvc
           servicePort: 80	

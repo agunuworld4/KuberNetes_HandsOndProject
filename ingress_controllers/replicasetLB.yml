@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mavenwebappodrs
+  namespace: agunuworld4
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+     app: mavenwebapp
+  template:
+    metadata:
+      name: mavenwebapppod
+      labels:
+        app: mavenwebapp
+    spec:
+      containers:
+      - name: mavenwebappcontainer
+        image: agunuworld/java-web-app:8
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mavenwebapppodsvc
+  namespace: agunuworld4
+spec:
+  type: ClusterIP
+  selector:
+    app: mavenwebapp
+  ports:
+  - port: 80
+    targetPort: 8080
+

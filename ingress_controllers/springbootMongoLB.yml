@@ -4,7 +4,6 @@ metadata:
   labels:
     name: springboot
   name: spring-controller
-  namespace: agunuworld4
 spec:
   replicas: 2
   template:
@@ -26,7 +25,6 @@ metadata:
   labels:
     name: springboot
   name: springboot
-  namespace: agunuworld4
 spec:
   type: ClusterIP
   ports:
@@ -43,7 +41,6 @@ metadata:
   labels:
     name: mongo
   name: mongo-controller
-  namespace: agunuworld4
 spec:
   replicas: 1
   template:
@@ -52,9 +49,9 @@ spec:
         name: mongo
     spec:
       volumes:
-      - name: pvc-nfs-pv1
+      - name: ebspvc
         persistentVolumeClaim:
-          claimName: pvc-nfs-pv1      
+          claimName: ebspvc-mongo4      
       containers:
       - image: mongo
         name: mongo
@@ -63,22 +60,21 @@ spec:
           containerPort: 27017
           hostPort: 27017
         volumeMounts:
-        - name: pvc-nfs-pv1
+        - name: ebspvc
           mountPath: /data/db
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-nfs-pv1
-  namespace: agunuworld4
+  name: ebspvc-mongo4
 spec:
-  storageClassName: manual
+  storageClassName: default
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 500Mi
+      storage: 5Gi
 
 ---
 # Mongo Node Port RC
@@ -88,7 +84,6 @@ metadata:
   labels:
     name: mongo
   name: mongo
-  namespace: agunuworld4
 spec:
   type: ClusterIP
   ports:
