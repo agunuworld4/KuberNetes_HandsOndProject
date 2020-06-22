@@ -1,0 +1,308 @@
+  This piece of work is 90% dedicated to MithunTechnologies and 5% dedicated to Edureka and to myself
+                                                                                    To God be the glory
+                                                             #Self_manage_Kubernetes_kubeadm_installation_note
+                                                            #Setup Kubernetes (K8s) Cluster on AWS
+
+1) Create Ubuntu EC2 instance
+
+2) install AWSCLI
+
+ sudo apt update -y
+ sudo curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
+ sudo apt install unzip python -y
+ sudo unzip awscli-bundle.zip
+ #sudo apt-get install unzip - if you dont have unzip in your system
+ sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+ 
+ 
+3) Install kops on ubuntu instance:
+
+ 	#Install wget if not installed
+ 	sudo apt install wget -y
+ sudo wget https://github.com/kubernetes/kops/releases/download/1.10.0/kops-linux-amd64
+ sudo chmod +x kops-linux-amd64
+ sudo mv kops-linux-amd64 /usr/local/bin/kops
+ 
+4) Install kubectl
+
+ sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+
+ sudo chmod +x ./kubectl
+ sudo mv ./kubectl /usr/local/bin/kubectl
+
+5) Create an IAM role from Consloe or CLI with below Policies.
+
+	AmazonEC2FullAccess 
+	AmazonS3FullAccess
+	IAMFullAccess 
+	AmazonVPCFullAccess
+
+
+Then Attach IAM role to ubuntu server from Console Select KOPS Server --> Actions --> Instance Settings --> Attach/Replace IAM Role --> Select the role which
+You Created. --> Save.
+
+
+
+6) create an S3 bucket Execute below commond in KOPS Server use unique bucket name if you get bucket name exists error.
+
+	aws s3 mb s3://<bucketname>
+	
+    ex:
+	# S3 bucket name should be unique across AWS
+	aws s3 mb s3://eghosaagunubucket.in
+     
+	Expose environment variable:
+
+    # Add env variables in bashrc
+    vi .bashrc
+	
+	# Give Unique Name And S3 Bucket which you created.
+export NAME=myvm.k8s.local
+export KOPS_STATE_STORE=s3://eghosaagunubucket.in
+ 
+    source .bashrc
+	
+7) Create sshkeys before creating cluster
+
+    ssh-keygen
+ 
+
+8)Create kubernetes cluster definitions on S3 bucket
+
+kops create cluster --zones us-east-1a --networking weave --master-size t2.medium --master-count 1 --node-size t2.medium --node-count=2 ${NAME}
+	
+kops create secret --name ${NAME} sshpublickey admin -i ~/.ssh/id_rsa.pub
+
+9) Create kubernetes cluser
+
+ kops update cluster ${NAME} --yes
+
+10) Validate your cluster(KOPS will take some time to create cluster ,Execute below commond after 3 or 4 mins)
+Suggestions:
+ * validate cluster: kops validate cluster
+ * list nodes: kubectl get nodes --show-labels
+ * ssh to the master: ssh -i ~/.ssh/id_rsa admin@api.myvm.k8s.local
+ * the admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
+ * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/addons.md.
+https://www.metricfire.com/blog/how-to-deploy-prometheus-on-kubernetes
+	   kops validate cluster
+ 
+11) To list nodes
+
+	  kubectl get nodes 
+  
+  
+  
+To Delete Cluster
+
+   kops delete cluster --name=${NAME} --state=${KOPS_STATE_STORE} --yes  
+   
+====================================================================================================
+
+
+IF you wan to SSH to Kubernates Master or Nodes Created by KOPS. You can SSH From KOPS_Server
+
+ssh  admin@<IPOrDNS>
+it above command  is not working
+then execute
+ssh -i ~/.ssh/id_rsa admin@<IPOrDNS>
+                                                                                          #Final Job
+first: ingrees namespace
+  Install Kubernetes on Ubuntu 18.04 LTS
+Step1: On All Machines ( Master & All nodes ):
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update ; clear
+sudo apt-get install -y docker-ce
+sudo service docker start ; clear
+
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -                                    
+sudo apt-get update ; clear
+sudo apt-get install -y kubelet kubeadm kubectl     ------->master only
+sudo apt-get install -y kubelet kubeadm                    ------->Nodes only bcox kubectl commands are not requre in the kubelet	
+                                                                            #Step2: On Master only:
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+       #exit and run as normal user
+sudo mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
+
+kubectl get nodes
+kubectl get all --all-namespaces
+                                    #Kubernetes_Topic
+What is Kubernetes?
+• Kubernetes is an orchestration engine and open-source platform for managing  containerized applications.
+• Responsibilities include container deployment, scaling & descaling of containers & container load balancing
+                                          #The features of Kubernetes, are as follows:
+•Automated Scheduling: Kubernetes provides advanced scheduler to launch container on cluster nodes based on their resource requirements and other constraints, while not sacrificing availability.
+•Self Healing Capabilities: Kubernetes allows to replaces and reschedules containers when nodes die. It also kills containers that don’t respond to user-defined health check and doesn’t advertise them to clients until they are ready to serve.
+•Automated rollouts & rollback: Kubernetes rolls out changes to the application or its configuration while monitoring application health to ensure it doesn’t kill all your instances at the same time. If something goes wrong, with Kubernetes you can rollback the change.
+•Horizontal Scaling & Load Balancing: Kubernetes can scale up and scale down the application as per the requirements with a simple command, using a UI, or automatically based on CPU usage.
+                                                                                 #Kubernetes Components
+                                              #Web UI (Dashboard)
+.Dashboard is a web-based Kubernetes user interface. You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster itself along with its available resources.
+                                         #Kubectl
+.Kubectl is a command line configuration tool (CLI) for Kubernetes used to interact with master node of kubernetes. Kubectl has a config file called kubeconfig, this file has the information about server and authentication information to access the API Server.
+                                                      #Master Node
+.The master node is responsible for the management of Kubernetes cluster. It is mainly the entry point for all administrative tasks.It handles the orchestration of the worker nodes. There can be more than one master node in the cluster to check for fault tolerance.
+                                      .Master Components
+It has below components that take care of communication, scheduling and controllers.
+.API Server:
+Kube API Server interacts with API, Its a frontend of the kubernetes control plane. Communication
+center for developers, sysadmin and other Kubernetes components
+.Scheduler
+Scheduler watches the pods and assigns the pods to run on specific hosts.
+                                                                          #Kubernetes Components
+.Controller Manager:
+Controller manager runs the controllers in background which runs different tasks in Kubernetes cluster. Performs cluster-level functions (replication, keeping track of worker nodes, handling nodes failures…).
+                                  #Some of the controllers are,
+1. Node controller - Its responsible for noticing and responding when nodes go down.
+2. Replication controllers - It maintains the number of pods. It controls how many identical copies of a pod should be running
+somewhere on the cluster.
+3. Endpoint controllers joins services and pods together.
+4. Replicaset controllers ensure number of replication of pods running at all time.
+5. Deployment controller provides declarative updates for pods and replicasets.
+6. Daemonsets controller ensure all nodes run a copy of specific pods.
+7. Jobs controller is the supervisor process for pods carrying out batch jobs
+8.etcd
+etcd is a simple distribute key value store. kubernetes uses etcd as its database to store all cluster datas.
+some of the data stored in etcd is job scheduling information, pods, state information and etc.
+                                                                                         #Kubernetes Components
+                                                                                          ////////////////////
+Worker Nodes
+• Worker nodes are the nodes where the application actually running in kubernetes cluster, it is also know as minion.
+These each worker nodes are controlled by the master node using kubelet process.
+• Container Platform must be running on each worker nodes and it works together
+with kubelet to run the containers, This is why we use Docker engine
+and takes care of managing images and containers.
+• We can also use other container platforms like CoreOS, Rocket.
+Node Components
+Kubelet
+• Kubelet is the primary node agent runs on each nodes and reads the container manifests which ensures that containers are running
+and healthy.
+• It makes sure that containers are running in a pod. The kubelet doesn’t manage containers which were not created by Kubernetes.
+Kube-proxy
+• kube-proxy enables the Kubernetes service abstraction by maintaining network rules on the host and performing connection
+forwarding.
+• It helps us to have network proxy and load balancer for the services in a single worker node. Worker nodes can be exposed to internet
+via kubeproxy.
+Container Runtime
+• Each node must have a container runtime, such as Docker, rkt, or another container runtime to process instructions from the master
+server to run containers.
+
+                                                                  #Kubernetes Objects
+What is a Namespace?
+You can think of a Namespace as a virtual cluster inside your Kubernetes cluster. You can have multiple namespaces inside a single
+Kubernetes cluster, and they are all logically isolated from each other. They can help you and your teams with organization, security, and
+even performance.
+The first three namespaces created in a cluster are always default, kube-system, and kube-public. While you can technically deploy
+within these namespaces, I recommend leaving these for system configuration and not for your projects.
+• Default is for deployments that are not given a namespace, which is a quick way to create a mess that will be hard to clean up if you
+do too many deployments without the proper information.
+• Kube-system is for all things relating to the Kubernetes system. Any deployments to this namespace are playing a dangerous game and
+can accidentally cause irreparable damage to the system itself.
+• Kube-public is readable by everyone, but the namespace is reserved for system usage.
+Using namespaces for isolation
+• I have used namespaces for isolation in a couple of ways. I use them most often to split many users' projects into separate environments. This
+is useful in preventing cross-project contamination since namespaces provide independent environments.
+                                                          #Kubernetes Objects
+POD
+• A Pod always runs on a Node.
+• A pod is the smallest building block or basic unit of scheduling in Kubernetes.
+• In a Kubernetes cluster, a pod represents a running process
+.Each Pod has its unique IP Address within the cluster.
+• Any data saved inside the Pod will disappear without a persistent storage
+  • The API server saves the info for the pod in ETCD                 
+Pod Concepts
+• Pod is ephemeral(lasting for a very short time) and won’t be rescheduled to a new node once it dies.
+• You should not directly use Pod for deployment, Kubernetes have controllers like
+Replica Sets, Deployment, Deamon sets to keep pod alive
+                                      #Replication Controller
+• Replication Controller is one of the key features of Kubernetes, which is responsible for managing the pod lifecycle. It is responsible for making sure that the specified number of pod replicas are running at any point of time.
+• A Replication Controller is a structure that enables you to easily create multiple pods, then make sure that that number of pods always exists. If a pod does crash, the Replication Controller replaces it.
+• Replication Controllers and PODS are associated with labels.
+                                                #ReplicaSet
+• ReplicaSet is the next-generation Replication Controller
+• The only difference between a ReplicaSet and a Replication Controller right now is the selector support. 
+                                              #DaemonSet
+A DaemonSet make sure that all or some kubernetes Nodes run a copy of a Pod. 
+When a new node is added to the cluster, a Pod is added to it to match the rest of the nodes and when a node is removed from 
+                                                 #Kubernetes Objects
+.Deployment
+In Kubernetes, Deployment is the recommended way to deploy Pod or RS, simply because of the advance features it comes with. 
+          Below are some of the key benefits.
+• Deploy a RS.
+• Updates pods (PodTemplateSpec).
+• Rollback to older Deployment versions.
+• Scale Deployment up or down.
+• Pause and resume the Deployment.
+• Use the status of the Deployment to determine state of replicas.
+• Clean up older RS that you don’t need anymore
+kubectl scale deployment [DEPLOYMENT_NAME] --replicas [NUMBER_OF_REPLICAS]
+kubectl rollout status deployment nginx-deployment
+kubectl get deployment
+kubectl set image deployment nginx-deployment nginx-container=nginx:latest --record 
+kubectl get replicaset
+kubectl rollout history deployment nginx-deployment
+kubectl rollout history deployment nginx-deployment --revision=1
+kubectl rollout undo deployment nginx-deployment --to-revision=1
+                                        #Kubernetes Objects
+#Deployment Strategies
+.Rolling Deployment
+The rolling deployment is the standard default deployment to Kubernetes. It works by slowly, one by one, replacing pods of the previous version of your application with pods of the new version without any cluster downtime.
+#Deployment Strategies
+• In this type of very simple deployment, all of the old pods are killed all at once and get replaced all at once with the new ones.
+Deployment Strategies
+Blue/ Green (or Red / Black) deployments
+In a blue/green deployment strategy (sometimes referred to as red/black) the old version of the application (green) and the new version (blue) get deployed at the same time. When both of these are deployed, users only have access to the green; whereas, the blue is available to your QA team for test automation on a separate service or via direct portforwarding.
+
+                                                      #DOCKER PROJECT
+#computingforgeeks.com/install-docker-and-docker-compose-on-rhel-8-centos-8/
+#first clone the project 
+git clone git@github.com:AgunuOrganization/java-web-app-docker.git
+cd java-web-app-docker
+                                                                       #create a package a target folder
+/opt/apache-maven-3.6.3
+ cd /opt
+  yum install wget -y
+  wget -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm
+ yum install jdk-8u131-linux-x64.rpm -y
+ java -version
+                                                                    #install maven
+  wget http://us.mirrors.quenda.co/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip
+ls
+  unzip apache-maven-3.6.3-bin.zip
+ yum install unzip
+ unzip apache-maven-3.6.3-bin.zip
+ cd apache-maven-3.6.3
+ ls
+  pwd
+ vi /etc/profile
+export M2_HOME=/opt/apache-maven-3.6.2
+export PATH = $PATH:$M2_HOME/bin
+ source ~/.bash_profile
+mvn -version
+                                                                       # cd ~
+ cd  java-web-app-docker
+ docker build -t agunuworld/java-web-app:55
+ docker build -t agunuworld/java-web-app:55 .
+  clear
+   68  mvn clean package
+   69  
+ 70  ls
+   71  cd target
+   72  ls
+   73  cd ..
+   74  docker build -t agunuworld/java-web-app:55 .
+   75  docker images
+   76  docker images ls
+   77  docker push agunuworld/java-web-app:55
+   78  docker login -u agunuworld
+   79  docker push agunuworld/java-web-app:55
+58  mvn -version
