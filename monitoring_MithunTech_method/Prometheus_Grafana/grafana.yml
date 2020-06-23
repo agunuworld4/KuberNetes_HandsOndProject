@@ -46,6 +46,20 @@ metadata:
   name: grafana
   namespace: monitoring
 spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana
+  namespace: m4444444444444444
+spec:
   accessModes:
     - "ReadWriteOnce"
   resources:

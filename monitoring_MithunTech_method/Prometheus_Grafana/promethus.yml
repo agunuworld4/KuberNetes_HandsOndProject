@@ -315,6 +315,20 @@ metadata:
   name: prometheus-alertmanager
   namespace: monitoring
 spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-alertmanager
+  namespace: monitoring44444444444444
+spec:
   accessModes:
     - ReadWriteOnce
   resources:
@@ -326,6 +340,19 @@ kind: PersistentVolumeClaim
 metadata:
   name: prometheus-server
   namespace: monitoring
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-server
+  namespace: monitoring444444444444444444
 spec:
   accessModes:
     - ReadWriteOnce
@@ -548,7 +575,7 @@ spec:
     component: "alertmanager"
     app: prometheus
   sessionAffinity: None
-  type: "ClusterIP"
+  type: "NodePort"
 ---
 apiVersion: v1
 kind: Service

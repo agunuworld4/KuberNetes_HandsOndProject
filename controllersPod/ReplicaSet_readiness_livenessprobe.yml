@@ -19,7 +19,7 @@ spec:
         image: agunuworld/java-web-app:22
         ports:
         - containerPort: 8080
-         readinessProbe:
+        readinessProbe:
           httpGet:
             path: /java-web-app
             port: 8080
