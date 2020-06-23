@@ -585,7 +585,7 @@ spec:
     component: "server"
     app: prometheus
   sessionAffinity: None
-  type: "LoadBalancer"
+  type: "NodePort"
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -855,3 +855,4 @@ spec:
         - name: storage-volume
           persistentVolumeClaim:
             claimName: prometheus-server
+

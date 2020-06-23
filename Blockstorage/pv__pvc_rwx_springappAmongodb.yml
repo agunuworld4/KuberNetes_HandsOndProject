@@ -27,7 +27,7 @@ metadata:
   name: springapppodsvc
   namespace: agunuworld4
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: springappls
   ports:

@@ -39,3 +39,4 @@ spec:
         - name: tmp-dir
           mountPath: /tmp
       hostNetwork: true
+

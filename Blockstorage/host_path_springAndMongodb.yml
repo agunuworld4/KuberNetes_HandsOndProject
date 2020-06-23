@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   name: springapprs
-  namespace: agunuworld4
+  namespace: agunuworld7
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
      app: springappls
@@ -25,7 +25,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: springapppodsvc
-  namespace: agunuworld4
+  namespace: agunuworld7
 spec:
   type: NodePort
   selector:
@@ -33,14 +33,14 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-    nodePort: 30004
+    nodePort: 30007
 
 ---
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   name: mongoapprs
-  namespace: agunuworld4
+  namespace: agunuworld7
 spec:
   selector:
     matchLabels:
@@ -68,7 +68,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mongo
-  namespace: agunuworld4
+  namespace: agunuworld7
 spec:
   type: ClusterIP
   selector:

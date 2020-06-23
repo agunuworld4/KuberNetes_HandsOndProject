@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ReplicationController
 metadata:
   name: replicationcontrollerpod
-  namespace: jacocoworldrc
+  namespace: jacocoworld
 spec:
  replicas: 4
  selector:
@@ -16,7 +16,7 @@ spec:
    spec:
      containers:
      - name: javawebapppcontainer
-       image: agunuworld/java-web-app:9
+       image: agunuworld/maven-web-app:55
        ports:
        - containerPort: 8080
 
@@ -25,7 +25,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: javawebapppodsvc
-  namespace: jacocoworldrc
+  namespace: jacocoworld
 spec:
   type: NodePort
   selector:
@@ -33,5 +33,5 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-    nodePort: 30002
+    nodePort: 30003
 

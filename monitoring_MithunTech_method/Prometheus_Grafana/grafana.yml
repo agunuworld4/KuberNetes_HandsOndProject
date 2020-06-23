@@ -58,7 +58,7 @@ metadata:
   name: grafana
   namespace: monitoring
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: service
       port: 80
@@ -147,3 +147,4 @@ spec:
           configMap:
             defaultMode: 420
             name: grafana-datasources
+

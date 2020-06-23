@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 kubectl -n kube-system delete service/metrics-server
 kubectl -n kube-system delete deployment.apps/metrics-server

@@ -183,7 +183,7 @@ subjects:
 
 ---
 
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus-deployment
@@ -216,7 +216,7 @@ spec:
           configMap:
             defaultMode: 420
             name: prom-server-conf
-  
+
         - name: prometheus-storage-volume
           emptyDir: {}
 
@@ -236,3 +236,4 @@ spec:
   ports:
     - port: 8080
       targetPort: 9090
+
