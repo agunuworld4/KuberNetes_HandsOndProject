@@ -5,7 +5,7 @@ metadata:
   name: hpadeployment
   namespace: agunuworld44
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       name: hpapod
@@ -55,9 +55,9 @@ spec:
     kind: Deployment
     name: hpadeployment
   minReplicas: 2
-  maxReplicas: 5
+  maxReplicas: 10
   metrics:
     - resource:
         name: cpu
-        targetAverageUtilization: 40
+        targetAverageUtilization: 15
       type: Resource

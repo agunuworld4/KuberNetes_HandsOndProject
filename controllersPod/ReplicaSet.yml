@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   name: javawebapprs
-  namespace: agunuworld
+  namespace: agunuworld4
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
      app: javawebapp
@@ -19,7 +19,7 @@ spec:
         image: agunuworld/java-web-app:22
         ports:
         - containerPort: 8080
-         readinessProbe:
+        readinessProbe:
           httpGet:
             path: /java-web-app
             port: 8080
@@ -39,7 +39,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: javawebapppodsvc
-  namespace: agunuworld
+  namespace: agunuworld4
 spec:
   type: NodePort
   selector:

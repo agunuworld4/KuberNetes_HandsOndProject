@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-alertmanager
+  namespace: monitoring5
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 35.235.103.123
+    path: "/agunubackup/agunubackup4/"
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-server
+  namespace: monitoring5
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 35.235.103.123
+    path: "/agunubackup/agunubackup4/"
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 35.235.103.123
+    path: "/agunubackup/agunubackup4/"
+
