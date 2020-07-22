@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: javawebappdeploy
-  namespace: agunuworld
 spec:
   replicas: 4
   strategy:
@@ -30,14 +29,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: javawebapppodsvc
   namespace: agunuworld
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: javawebapp
   ports:
   - port: 80
     targetPort: 8080
-    nodePort: 30002
 
