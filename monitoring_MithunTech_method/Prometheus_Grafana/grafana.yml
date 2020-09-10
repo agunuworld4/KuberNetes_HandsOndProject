@@ -44,7 +44,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: grafana
-  namespace: monitoring
+  namespace: monitoring4444
 spec:
   storageClassName: manual
   accessModes:
@@ -58,13 +58,13 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: grafana
-  namespace: monitoring4
+  namespace: monitoring
 spec:
   accessModes:
-    - "ReadWriteMany"
+    - "ReadOnlyMany"
   resources:
     requests:
-      storage: "2Gi"
+      storage: "4Gi"
 ---
 apiVersion: v1
 kind: Service
@@ -72,7 +72,7 @@ metadata:
   name: grafana
   namespace: monitoring
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - name: service
       port: 80

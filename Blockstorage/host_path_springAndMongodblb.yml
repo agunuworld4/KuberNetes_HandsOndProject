@@ -53,7 +53,7 @@ spec:
       volumes:
       - name: mongohostpath
         hostPath:
-           path: /opt/mongobkp           #/tmp/mongobkp or /opt/mybkp
+           path: /tmp/mongobkp #or /opt/mybkp
       containers:
       - name: mongocontainer
         image: mongo

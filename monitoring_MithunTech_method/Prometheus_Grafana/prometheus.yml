@@ -313,21 +313,21 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: prometheus-alertmanager
-  namespace: monitoring
+  namespace: monitoring444444444444444444444
 spec:
   storageClassName: manual
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: 2Gi
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: prometheus-alertmanager
-  namespace: monitoring44444444444444
+  namespace: monitoring
 spec:
   accessModes:
     - ReadWriteOnce
@@ -339,26 +339,26 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: prometheus-server
-  namespace: monitoring
+  namespace: monitoring4444444444444444448Gi
 spec:
   storageClassName: manual
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: 2Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: prometheus-server
-  namespace: monitoring444444444444444444
+  namespace: monitoring
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: "8Gi"
+      storage: "4Gi"
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole

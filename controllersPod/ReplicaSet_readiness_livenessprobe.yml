@@ -41,7 +41,7 @@ metadata:
   name: javawebapppodsvc
   namespace: agunuworld
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: javawebapp
   ports:
